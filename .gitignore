@@ -1,0 +1,33 @@
+# Build output
+dist/
+*.tsbuildinfo
+
+# Dependencies
+node_modules/
+.pnp.*
+.yarn/
+
+# Cache
+.cache/
+.vitest/
+.vite/
+
+# Editor
+.vscode/
+.idea/
+*.swp
+.DS_Store
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+
+# Local env
+.env
+.env.local
+.env.*.local
+
+# Forge runtime caches
+.yujin-forge/
+~/.yujin-forge/
