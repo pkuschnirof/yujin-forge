@@ -9,8 +9,13 @@ Yujin Forge is the commercial layer of the Yujin / NAC ecosystem:
 a React development framework with NAC-3 baked in and Claude Code
 embedded. Spec in `docs/SPEC.md`. Charter in `README.md`.
 
-**Day-0 status (2026-05-10):** planning + branding anchor only.
-No production code yet. Implementation kickoff after NAC v2.3 GA.
+**Status (2026-05-17):** CLI alpha. Eight commands, 74 tests
+green. Lifecycle works end-to-end:
+new -> migrate audit/apply -> validate -> test -> ship.
+Trial + paid-seat license flows real. Only `yf chat` (voice +
+chat panel) remains a stub. See
+`docs/SESSION_HANDOFF_2026_05_17.md` for the slice-by-slice
+recap.
 
 ## What lives where (today)
 
@@ -47,13 +52,14 @@ appropriate upstream repo and document them here.
 
 ## What you should NOT do without owner approval
 
-- Do not write production code in this repo during day 0.
-  Implementation kickoff is gated on NAC v2.3 GA.
-- Do not register the `@yujin/forge` npm scope from this repo
-  until the v1.0 launch.
+- Do not register the `@yujin/forge-cli` npm scope until the v1.0
+  launch. Local publishes for testing are fine; public publishes
+  are not.
 - Do not change `LICENSE` -- the commercial license shape needs
   Pablo's sign-off.
 - Do not auto-mirror code from rpaforce-crm.
+- Do not enable the template-smoke CI job until @yujin/nac is
+  on npm (see .github/workflows/ci.yml comment).
 
 ## Useful starting points
 

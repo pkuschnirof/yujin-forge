@@ -6,8 +6,10 @@ in natural language); Yujin Forge migrates / scaffolds it, makes
 every UI element agent-driveable through NAC-3, generates the
 test corpus, builds the mocks, and ships.
 
-> Status: **day 0**, 2026-05-10. Planning + branding anchor.
-> Implementation kickoff after the upstream NAC v2.3 GA.
+> Status: **CLI alpha**, 2026-05-17. Eight commands working
+> end-to-end; 74 tests green. See
+> `docs/SESSION_HANDOFF_2026_05_17.md` for what shipped.
+> v1.0 GA still gates on NAC v2.3 GA + the voice/chat panel.
 
 ## What it is
 
