@@ -26,7 +26,7 @@ afterEach(async () => {
 });
 
 describe('yf CLI', () => {
-  it('builds a program with the seven top-level commands', () => {
+  it('builds a program with the eight top-level commands', () => {
     const program = buildProgram();
     const names = program.commands.map((c) => c.name()).sort();
     expect(names).toEqual([
@@ -37,6 +37,7 @@ describe('yf CLI', () => {
       'new',
       'ship',
       'test',
+      'validate',
     ]);
   });
 

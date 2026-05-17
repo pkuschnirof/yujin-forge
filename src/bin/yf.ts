@@ -16,6 +16,7 @@ import { registerTestCommand } from '../commands/test.js';
 import { registerShipCommand } from '../commands/ship.js';
 import { registerLicenseCommand } from '../commands/license.js';
 import { registerDoctorCommand } from '../commands/doctor.js';
+import { registerValidateCommand } from '../commands/validate.js';
 import { VERSION } from '../version.js';
 
 export function buildProgram(): Command {
@@ -34,6 +35,7 @@ export function buildProgram(): Command {
   registerShipCommand(program);
   registerLicenseCommand(program);
   registerDoctorCommand(program);
+  registerValidateCommand(program);
 
   return program;
 }
