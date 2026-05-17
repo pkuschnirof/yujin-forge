@@ -1,0 +1,15 @@
+{
+  "$schema": "https://yujin.app/schemas/yujin.forge.json",
+  "project_slug": "%%PROJECT_SLUG%%",
+  "project_name": "%%PROJECT_NAME%%",
+  "forge_version": "0.1.0",
+  "nac_version":   "2.3.x",
+  "license_ref":   "%%LICENSE_REF%%",
+  "telemetry": {
+    "opt_out": false
+  },
+  "generate": {
+    "tests":  true,
+    "mocks":  true
+  }
+}

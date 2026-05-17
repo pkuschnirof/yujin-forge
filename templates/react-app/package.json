@@ -1,0 +1,35 @@
+{
+  "name": "%%PROJECT_NAME%%",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "%%PROJECT_NAME%% -- Yujin Forge React app, NAC-3 conformant by construction.",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "lint": "tsc --noEmit",
+    "yf": "yf"
+  },
+  "dependencies": {
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "@yujin/nac": "^2.3.0"
+  },
+  "devDependencies": {
+    "@types/react": "18.3.18",
+    "@types/react-dom": "18.3.5",
+    "@vitejs/plugin-react": "4.3.4",
+    "msw": "2.7.0",
+    "@playwright/test": "1.49.1",
+    "typescript": "5.7.2",
+    "vite": "6.0.7",
+    "vitest": "2.1.8"
+  },
+  "engines": {
+    "node": ">=18.17"
+  }
+}
