@@ -2,22 +2,25 @@
 
 Session goal: implementation kickoff for Yujin Forge after the
 day-0 charter. Pablo authorised "avanza toda la noche, decide
-tú, no frenes".
+tú, no frenes" + later "por favor continúa a finalizar.
+Acuérdate, chat con 3 modos".
 
 ## TL;DR
 
 Yujin Forge went from **planning documents only** to a **working
-CLI with 8 commands, 74 tests green, full publish-ready ESM
-package**. The end-to-end lifecycle works:
+CLI with 8 commands, 97 tests green, full publish-ready ESM
+package, plus a local HTTP server with a 3-mode browser chat
+panel**. The end-to-end lifecycle works:
 
-    yf new my-app           ->   scaffold a NAC-3 React app
-    yf migrate <repo> --audit ->  free, read-only inventory
-    yf migrate <repo> --apply  -> paid, byte-preserving AST edits
-    yf validate .           ->   pre-commit structural gate
-    yf test                 ->   route to npm test
-    yf ship                 ->   gate (validate -> license -> test -> build)
-    yf license activate     ->   install a paid seat (JWT shape)
-    yf doctor               ->   env + license health
+    yf new my-app             -> scaffold a NAC-3 React app
+    yf migrate <repo> --audit -> free, read-only inventory
+    yf migrate <repo> --apply -> paid, byte-preserving AST edits
+    yf validate .             -> pre-commit structural gate
+    yf test                   -> route to npm test
+    yf ship                   -> gate (validate -> license -> test -> build)
+    yf chat                   -> local server + 3-mode browser panel
+    yf license activate       -> install a paid seat (JWT shape)
+    yf doctor                 -> env + license health
 
 Trial mode works offline. Paid-seat mode persists
 `~/.yujin-forge/license.json` with machine fingerprint.
@@ -35,6 +38,9 @@ Trial mode works offline. Paid-seat mode persists
 | `12fa2c6` | `yf validate [path]` -- static project structure check |
 | `1b1d941` | real `yf ship` gate (validate -> license -> test -> build) |
 | `a3dcf72` | `yf test` real impl -- shells to npm test with routing |
+| `23b6f0b` | handoff doc -- this file (interim) |
+| `a4cce6b` | flip README + CLAUDE.md from day-0 to CLI-alpha |
+| `53b6387` | `yf chat` real -- local server + 3-mode browser panel |
 
 Each commit ships green tests + a smoke verification noted in
 the commit body.
@@ -58,13 +64,27 @@ the commit body.
    validate clean / license / test skipped / build (currently
    fails because @yujin/nac is unpublished -- the gate is doing
    its job).
+7. **Chat:** `yf chat --cwd /tmp/my-app` -> server on
+   http://127.0.0.1:4847/ -> open in a browser -> click the
+   "侑" globito bottom-right -> chat with Claude. Transcripts
+   land in `.yujin-forge/cache/chat/<stamp>.json` inside the
+   project. Set `YUJIN_ANTHROPIC_API_KEY` env (or drop a key
+   into `~/.yujin-forge/api-key.txt`) before opening, otherwise
+   /api/chat returns 503 no_api_key.
 
 ## What's still stubbed
 
-- `yf chat` -- the voice + chat panel. Big slice: needs the
-  Claude Agent SDK, a local server, WebSocket bridge for the
-  panel, voice STT/TTS. Day-0 stub still prints the milestone
-  message.
+- **Voice STT/TTS inside `yf chat`** -- the panel ships the mic
+  button as visibly disabled with a "Voz disponible en v1.0"
+  tooltip. Lights up when @yujin/nac v2.3 publishes the audio
+  primitives the panel will consume.
+- **Tool-use loop** -- chat is conversational only today. The
+  `forge.read_manifest` / `forge.write_component` /
+  `forge.run_tests` / `forge.run_migration_step` /
+  `forge.consult_nac_spec` tools from SPEC 4.2 are not wired
+  yet. When they land, the chat will actually edit code in
+  place. Likely a 1-2 day slice once we decide the approval-
+  flow UX.
 - `yf generate tests` -- the auto-test-corpus emitter. Not yet
   a registered command. Will live next to the migrate apply
   module.
@@ -89,7 +109,7 @@ the commit body.
 
 ## Tests
 
-74 cases across 9 files:
+97 cases across 12 files:
 
 - `tests/license.test.ts` -- trial lifecycle (5)
 - `tests/activate.test.ts` -- paid seat + JWT parse + revoke (13)
@@ -100,24 +120,32 @@ the commit body.
 - `tests/validate.test.ts` -- structural project check (9)
 - `tests/ship.test.ts` -- gate orchestration with injected exec (7)
 - `tests/test-command.test.ts` -- yf test routing (2)
+- `tests/chat-claude.test.ts` -- API key chain + envelope + errors (8)
+- `tests/chat-persistence.test.ts` -- transcript store (7)
+- `tests/chat-server.test.ts` -- server routes + 503/502 mapping (8)
 
-`npm test` runs them all in ~2 seconds.
+`npm test` runs them all in ~2.3 seconds.
 
 ## Next slices, in suggested order
 
-1. **`yf generate tests`** -- emit Vitest tests from a manifest.
-   Highest value-density; closes the "Forge writes the test
-   corpus" pitch from the SPEC.
-2. **Manifest deep-validator** -- parse `src/nac/manifest.ts` via
+1. **Chat tool-use loop** -- give the chat real powers. The
+   tool catalog from SPEC 4.2 (read_manifest, write_component,
+   run_tests, run_migration_step, consult_nac_spec) plus the
+   Anthropic tool_use protocol. This is the differentiator that
+   makes Forge feel like "Claude embedded" instead of "Claude
+   chat embedded".
+2. **`yf generate tests`** -- emit Vitest tests from a manifest.
+   Pure utility; closes the "Forge writes the test corpus"
+   pitch.
+3. **Manifest deep-validator** -- parse `src/nac/manifest.ts` via
    AST + verify label_i18n has all 10 NAC locales. Pre-commit
    gold.
-3. **Mock generator** -- given a network surface inferred from
+4. **Voice STT/TTS in chat** -- the mic button is rendered
+   disabled today. Waits on @yujin/nac v2.3 publishing the
+   audio primitives.
+5. **Mock generator** -- given a network surface inferred from
    `fetch`/`axios` calls, emit MSW handlers. Heaviest; requires
-   the @yujin/nac runtime to publish first so the mock contract
-   has shapes to assert against.
-4. **`yf chat` voice + text panel** -- the big one. Plan it as a
-   2-week slice, not a 2-hour slice. Spec is in
-   `docs/SPEC.md` section 5.
+   the @yujin/nac runtime to publish first.
 
 ## Notes for Pablo
 
